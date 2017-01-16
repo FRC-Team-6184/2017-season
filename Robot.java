@@ -16,7 +16,7 @@ public class Robot extends SampleRobot {
 
 	Talon mFL = new Talon(0), mFR = new Talon(3), mBL = new Talon(2), mBR = new Talon(1); //All the motor controllers 
 	
-	Solenoid tshirtSolenoid = new Solenoid(1); //Assumes 0 is the ID of the Pnemuatic Controller and that we are using the 1st output
+	Solenoid tshirtSolenoid = new Solenoid(0); //Assumes 0 is the ID of the Pnemuatic Controller and that we are using the 1st output
 	
 	public Robot() {
 		
@@ -29,7 +29,7 @@ public class Robot extends SampleRobot {
 			solenoidController(); //Run solenoid function
 			
 			double m = .7;
-			if(stick.getRawButton(1)) m = 1; //Boost power
+			if(stick.getRawButton(3)) m = 1; //Boost power
 			else m = .7; 
 			double x = stick.getX()*m; //How much  "X" to apply to motors
 			double y = -stick.getY()*m; //How much "y"
@@ -84,7 +84,7 @@ public class Robot extends SampleRobot {
 	
 	
 	private void solenoidController() {
-		if(stick.getRawButton(3)) tshirtSolenoid.set(true);
+		if(stick.getRawButton(1)) tshirtSolenoid.set(true);
 		else tshirtSolenoid.set(false);
 	}
 }
