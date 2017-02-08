@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -18,6 +19,10 @@ public class Robot extends SampleRobot {
 	
 	Solenoid tshirtSolenoid = new Solenoid(0); //Assumes 0 is the ID of the Pnemuatic Controller and that we are using the 1st output
 	
+	AnalogInput ultraSonic = new AnalogInput(0); //Assumes 0 for the Analog Input on RoboRIO
+	final double ultraInputVoltage = 5.0f; //What's the voltage input for HRLV-MaxSonar-EZ1 relative to Pin 7 (GND)
+	final double ultraScaling = ultraInputVoltage/5120; //(about 0.977mV per 1mm at 5V input voltage) Scaling specs for HRLV-MaxSonar-EZ1
+	
 	public Robot() {
 		
 	}
@@ -25,6 +30,7 @@ public class Robot extends SampleRobot {
 	@Override
 	public void operatorControl() {
 		while (isOperatorControl() && isEnabled()) {
+			System.out.println(getDistanceUltra()); //Print distance in mm
 			
 			solenoidController(); //Run solenoid function
 			
@@ -86,5 +92,12 @@ public class Robot extends SampleRobot {
 	private void solenoidController() {
 		if(stick.getRawButton(1)) tshirtSolenoid.set(true);
 		else tshirtSolenoid.set(false);
+	}
+	
+	//Uses Ultrasonic sensor to find distance in mm
+	private double getDistanceUltra() {
+		double volts = ultraSonic.getVoltage();
+		return volts/ultraScaling;
+
 	}
 }
