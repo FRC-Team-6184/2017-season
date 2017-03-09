@@ -62,7 +62,7 @@ public class Robot extends SampleRobot {
 			}
 			if(stick.getRawButton(1)){
 				shoot.setSpeed(1);
-				actu.setSpeed(.1);
+				actu.setSpeed(.22);
 			} else {
 				shoot.setSpeed(0);
 				actu.setSpeed(0);
@@ -75,8 +75,53 @@ public class Robot extends SampleRobot {
 		}
 	}
 
+	public void stop() {
+		mR.setSpeed(0);
+		mL.setSpeed(0);
+	}
+	public void stopShooter() {
+		shoot.setSpeed(0);
+		actu.setSpeed(0);
+	}
 	@Override
 	public void autonomous() {
+		double m = .7;
+		mR.setSpeed(0.5 * m);
+		mL.setSpeed(-0.5 * m);
+		try {
+			wait(1);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		stop();
+		
+		//Rotate right
+		mR.setSpeed(0.2*m);
+		mL.setSpeed(0.2*m);
+		
+		try {
+			wait(1);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		stop();
+		
+		//Shoot
+		
+		shoot.setSpeed(1);
+		actu.setSpeed(.1);
+		
+		try {
+			wait(13);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		stopShooter();
 	}
 
 	// private void solenoidController() {
