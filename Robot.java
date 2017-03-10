@@ -17,9 +17,9 @@ public class Robot extends SampleRobot {
 	Joystick stick = new Joystick(0); // set to ID 1 in DriverStation
 
 	Talon mR = new Talon(0), mL = new Talon(1), shoot = new Talon(3), climb = new Talon(4), actu = new Talon(2);
-																							// the
-																							// motor
-																						// controllers
+	// the
+	Timer timer = new Timer(); // motor
+	// controllers
 
 	// Solenoid tshirtSolenoid = new Solenoid(0); //Assumes 0 is the ID of the
 	// Pnemuatic Controller and that we are using the 1st output
@@ -50,25 +50,30 @@ public class Robot extends SampleRobot {
 				m = .7;
 			double y = stick.getY(); // How much "y"
 			double z = stick.getZ(); // How much "z"
-			if (y > .1 || y <= -.1) {
+			if (y > .05 || y <= -.05) {
 				mR.setSpeed(-y * m);
 				mL.setSpeed(y * m);
-			} else if (z > .1 || z <= -.1) {
-				mR.setSpeed(z*m);
-				mL.setSpeed(z*m);
+			} else if (z > .05 || z <= -.05) {
+				mR.setSpeed(z * m);
+				mL.setSpeed(z * m);
 			} else {
 				mR.setSpeed(0);
 				mL.setSpeed(0);
 			}
-			if(stick.getRawButton(1)){
+			if (stick.getRawButton(1)) {
 				shoot.setSpeed(1);
 				actu.setSpeed(.22);
 			} else {
 				shoot.setSpeed(0);
 				actu.setSpeed(0);
 			}
-			if(stick.getRawButton(8)){
-				climb.setSpeed(.5);
+			if (stick.getRawButton(12)) {
+				climb.setSpeed(0.5);
+			} else {
+				climb.setSpeed(0);
+			}
+			if (stick.getRawButton(11)) {
+				climb.setSpeed(1);
 			} else {
 				climb.setSpeed(0);
 			}
@@ -79,49 +84,49 @@ public class Robot extends SampleRobot {
 		mR.setSpeed(0);
 		mL.setSpeed(0);
 	}
+
 	public void stopShooter() {
 		shoot.setSpeed(0);
 		actu.setSpeed(0);
 	}
+
 	@Override
 	public void autonomous() {
-		double m = .7;
-		mR.setSpeed(0.5 * m);
-		mL.setSpeed(-0.5 * m);
-		try {
-			wait(1);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// Robot must start with the front side towards the wall
+		// Change rotationDir depending on the side
+
+		int rotationDir = 1; // Postive is for blue side, negative is for red
+								// side
+
+		double m_speed = .7;
+		System.out.println("Moving backwards");
+		mR.setSpeed(-0.5 * m_speed);
+		mL.setSpeed(0.5 * m_speed);
+		timer.delay(1);
+		System.out.println("Stopped");
 		stop();
-		
-		//Rotate right
-		mR.setSpeed(0.2*m);
-		mL.setSpeed(0.2*m);
-		
-		try {
-			wait(1);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+
+		System.out.println("Rotating" + rotationDir);
+		// Rotate in the rotationDir
+		mR.setSpeed(rotationDir * 0.7 * m_speed);
+		mL.setSpeed(rotationDir * 0.7 * m_speed);
+
+		timer.delay(1);
+
+		System.out.println("Stopped");
 		stop();
-		
-		//Shoot
-		
+
+		// Shoot
+		System.out.println("Shooting");
+
 		shoot.setSpeed(1);
-		actu.setSpeed(.1);
-		
-		try {
-			wait(13);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		actu.setSpeed(.23);
+
+		timer.delay(15);
+		System.out.println("Stopped");
+
 		stopShooter();
+		System.out.println("Done");
 	}
 
 	// private void solenoidController() {
