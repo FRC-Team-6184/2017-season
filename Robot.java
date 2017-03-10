@@ -102,7 +102,7 @@ public class Robot extends SampleRobot {
 		System.out.println("Moving backwards");
 		mR.setSpeed(-0.5 * m_speed);
 		mL.setSpeed(0.5 * m_speed);
-		timer.delay(1);
+		timer.delay(1.2);
 		System.out.println("Stopped");
 		stop();
 
