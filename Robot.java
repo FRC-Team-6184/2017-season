@@ -20,7 +20,7 @@ public class Robot extends SampleRobot {
 	// the
 	Timer timer = new Timer(); // motor
 	// controllers
-
+	double actuSpeed = 0.22;
 	// Solenoid tshirtSolenoid = new Solenoid(0); //Assumes 0 is the ID of the
 	// Pnemuatic Controller and that we are using the 1st output
 
@@ -39,15 +39,30 @@ public class Robot extends SampleRobot {
 
 	@Override
 	public void operatorControl() {
+		timer.reset();
 		climb.setSpeed(0);
 		while (isOperatorControl() && isEnabled()) {
 			// ultraOut.set(true);
 			// System.out.println(getDistanceUltra()); //Print distance in mm
 			double m;
-			if (stick.getRawButton(3))
+			
+			if (stick.getRawButton(3)) {
 				m = 1; // Boost power
-			else
+				actuSpeed = .5;
+			}
+			else {
 				m = .7;
+				actuSpeed = .22;
+			}
+			
+			if(stick.getRawButton(3)) {
+				mR.setSpeed(0.5);
+				mL.setSpeed(-0.5);
+				timer.delay(0.2);
+				mR.setSpeed(0);
+				mL.setSpeed(0);
+				timer.delay(0.5);
+			}
 			double y = stick.getY(); // How much "y"
 			double z = stick.getZ(); // How much "z"
 			if (y > .05 || y <= -.05) {
@@ -60,9 +75,10 @@ public class Robot extends SampleRobot {
 				mR.setSpeed(0);
 				mL.setSpeed(0);
 			}
+			
 			if (stick.getRawButton(1)) {
 				shoot.setSpeed(1);
-				actu.setSpeed(.22);
+				actu.setSpeed(actuSpeed);
 			} else {
 				shoot.setSpeed(0);
 				actu.setSpeed(0);
@@ -89,13 +105,30 @@ public class Robot extends SampleRobot {
 		shoot.setSpeed(0);
 		actu.setSpeed(0);
 	}
-
-	@Override
-	public void autonomous() {
+	
+	public void autoDriveForward() {
+		System.out.println("Driving Backwards");
+		double m_speed = .7;
+		mR.setSpeed(-0.5 * m_speed);
+		mL.setSpeed(0.5 * m_speed);
+		timer.delay(7.3);
+		System.out.println("Stopping");
+		stop();
+	}
+	public void autoGear() {
+		System.out.println("AutoGear - Driving Backwards");
+		double m_speed = .7;
+		mR.setSpeed(-0.5 * m_speed);
+		mL.setSpeed(0.5 * m_speed);
+		timer.delay(1.8);
+		System.out.println("Stopping");
+		stop();
+	}
+	public void autoShoot(int rotationDir) {
 		// Robot must start with the front side towards the wall
 		// Change rotationDir depending on the side
 
-		int rotationDir = 1; // Postive is for blue side, negative is for red
+//		int rotationDir = 1; // Postive is for blue side, negative is for red
 								// side
 
 		double m_speed = .7;
@@ -111,7 +144,7 @@ public class Robot extends SampleRobot {
 		mR.setSpeed(rotationDir * 0.7 * m_speed);
 		mL.setSpeed(rotationDir * 0.7 * m_speed);
 
-		timer.delay(1);
+		timer.delay(0.8);
 
 		System.out.println("Stopped");
 		stop();
@@ -128,7 +161,16 @@ public class Robot extends SampleRobot {
 		stopShooter();
 		System.out.println("Done");
 	}
-
+	@Override
+	public void autonomous() {
+		System.out.println("Doing Autonomous");
+//		autoShoot(1); // Postive is for blue side, negative is for red
+		// side
+		autoDriveForward();
+//		autoGear();
+		System.out.println("Done with autonomous");
+		
+	}
 	// private void solenoidController() {
 	// if(stick.getRawButton(1)) tshirtSolenoid.set(true);
 	// else tshirtSolenoid.set(false);
